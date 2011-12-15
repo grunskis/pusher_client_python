@@ -49,6 +49,18 @@ class Channel(object):
         else:
             raise Exception("Unexpected return status %s" % status)
 
+    def trigger_json(self, event, json_data, socket_id=None):
+        signed_query = self.signed_query(event, json_data, socket_id)
+        status = self.send_request(signed_query, json_data)
+        if status == 202:
+            return True
+        elif status == 401:
+            raise AuthenticationError
+        elif status == 404:
+            raise NotFoundError
+        else:
+            raise Exception("Unexpected return status %s" % status)
+
     def signed_query(self, event, json_data, socket_id):
         query_string = self.compose_querystring(event, json_data, socket_id)
         string_to_sign = "POST\n%s\n%s" % (self.path, query_string)
