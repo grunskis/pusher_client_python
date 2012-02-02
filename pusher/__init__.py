@@ -31,6 +31,12 @@ class Pusher(object):
         self._channels[name] = channel_type(name, self)
         return self._channels[name]
 
+    def webhook_valid(self, body, xsignature):
+        signature = hmac.new(self.secret, body, hashlib.sha256).hexdigest()
+
+        return signature == xsignature
+
+
 class Channel(object):
     def __init__(self, name, pusher):
         self.pusher = pusher
