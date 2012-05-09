@@ -85,7 +85,8 @@ class Channel(object):
     def send_request(self, query_string, data_string):
         signed_path = '%s?%s' % (self.path, query_string)
         http = httplib.HTTPConnection(self.pusher.host, self.pusher.port)
-        http.request('POST', signed_path, data_string)
+        headers = {'content-type': 'application/json'}
+        http.request('POST', signed_path, data_string, headers)
         return http.getresponse().status
 
     def authenticate(self, socket_id, custom_data=None):
